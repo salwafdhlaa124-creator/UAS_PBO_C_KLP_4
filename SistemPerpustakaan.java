@@ -74,3 +74,16 @@ class Buku {
         return s.length() <= max ? s : s.substring(0, max - 3) + "...";
     }
 }
+
+// ======================= ABSTRACTION: PENGGUNA =======================
+abstract class Pengguna {
+    private final String username;
+    private String password;
+    private final String nama;
+
+    public Pengguna(String username, String password, String nama) {
+        this.username = username;
+        this.password = password;
+        this.nama = nama;
+    }
+}

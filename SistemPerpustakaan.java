@@ -41,4 +41,10 @@ class Buku {
         this.tahun = tahun;
         this.stok = stok;
     }
+
+    public int getId() { return id; }
+    public String getJudul() { return judul; }
+    public String getPenulis() { return penulis; }
+    public int getTahun() { return tahun; }
+    public int getStok() { return stok; }
 }

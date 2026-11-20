@@ -47,4 +47,9 @@ class Buku {
     public String getPenulis() { return penulis; }
     public int getTahun() { return tahun; }
     public int getStok() { return stok; }
+
+    public void setJudul(String judul) { this.judul = judul; }
+    public void setPenulis(String penulis) { this.penulis = penulis; }
+    public void setTahun(int tahun) { this.tahun = tahun; }
+    public void setStok(int stok) { this.stok = stok; }
 }

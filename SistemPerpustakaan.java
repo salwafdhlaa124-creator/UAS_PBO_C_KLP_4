@@ -33,4 +33,12 @@ class Buku {
     private String penulis;
     private int tahun;
     private int stok;
+
+    public Buku(String judul, String penulis, int tahun, int stok) {
+        this.id = ++counter;
+        this.judul = judul;
+        this.penulis = penulis;
+        this.tahun = tahun;
+        this.stok = stok;
+    }
 }

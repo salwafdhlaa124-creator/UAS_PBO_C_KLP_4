@@ -26,4 +26,11 @@ class PerpustakaanException extends Exception {
 
 // ======================= MODEL: BUKU =======================
 class Buku {
+    private static int counter = 0;
+
+    private final int id;
+    private String judul;
+    private String penulis;
+    private int tahun;
+    private int stok;
 }

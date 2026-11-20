@@ -52,4 +52,25 @@ class Buku {
     public void setPenulis(String penulis) { this.penulis = penulis; }
     public void setTahun(int tahun) { this.tahun = tahun; }
     public void setStok(int stok) { this.stok = stok; }
+
+    public boolean tersedia() { return stok > 0; }
+
+    public void kurangiStok() throws PerpustakaanException {
+        if (stok <= 0) {
+            throw new PerpustakaanException("Stok buku \"" + judul + "\" sedang habis.");
+        }
+        stok--;
+    }
+
+    public void tambahStok() { stok++; }
+
+    @Override
+    public String toString() {
+        return String.format("| %-3d | %-30s | %-20s | %-5d | %-4d |",
+                id, potong(judul, 30), potong(penulis, 20), tahun, stok);
+    }
+
+    private static String potong(String s, int max) {
+        return s.length() <= max ? s : s.substring(0, max - 3) + "...";
+    }
 }

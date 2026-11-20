@@ -109,4 +109,18 @@ class Admin extends Pengguna {
 
     @Override
     public String getPeran() { return "Admin"; }
+
+    @Override
+    public void tampilkanMenu() {
+        System.out.println("\n========== MENU ADMIN ==========");
+        System.out.println("1. Lihat Daftar Buku");
+        System.out.println("2. Cari Buku");
+        System.out.println("3. Tambah Buku");
+        System.out.println("4. Edit Buku");
+        System.out.println("5. Hapus Buku");
+        System.out.println("6. Lihat Daftar Anggota");
+        System.out.println("7. Lihat Semua Riwayat Transaksi");
+        System.out.println("0. Logout");
+        System.out.println("================================");
+    }
 }

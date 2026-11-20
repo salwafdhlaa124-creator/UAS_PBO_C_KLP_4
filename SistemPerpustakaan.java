@@ -123,4 +123,27 @@ class Admin extends Pengguna {
         System.out.println("0. Logout");
         System.out.println("================================");
     }
+    @Override
+    public void jalankan(Perpustakaan sistem, Scanner sc) {
+        int pilih;
+        do {
+            tampilkanMenu();
+            pilih = Input.bacaInt(sc, "Pilih menu: ");
+            try {
+                switch (pilih) {
+                    case 1: sistem.tampilkanBuku(sistem.getDaftarBuku()); break;
+                    case 2: cariBuku(sistem, sc); break;
+                    case 3: tambahBuku(sistem, sc); break;
+                    case 4: editBuku(sistem, sc); break;
+                    case 5: hapusBuku(sistem, sc); break;
+                    case 6: sistem.tampilkanAnggota(); break;
+                    case 7: sistem.tampilkanTransaksi(sistem.getDaftarTransaksi()); break;
+                    case 0: System.out.println("Logout berhasil."); break;
+                    default: System.out.println("Menu tidak tersedia.");
+                }
+            } catch (PerpustakaanException e) {
+                System.out.println("[GAGAL] " + e.getMessage());
+            }
+        } while (pilih != 0);
+    }
 }

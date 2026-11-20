@@ -86,4 +86,9 @@ abstract class Pengguna {
         this.password = password;
         this.nama = nama;
     }
+    public String getUsername() { return username; }
+    public String getNama() { return nama; }
+
+    public boolean cekPassword(String input) { return password.equals(input); 
+    }
 }

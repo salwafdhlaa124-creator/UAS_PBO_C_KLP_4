@@ -91,4 +91,11 @@ abstract class Pengguna {
 
     public boolean cekPassword(String input) { return password.equals(input); 
     }
+        public abstract String getPeran();
+
+    // Polymorphism: tiap subclass menampilkan menu sesuai hak akses
+    public abstract void tampilkanMenu();
+
+    // Loop utama sesi pengguna setelah login
+    public abstract void jalankan(Perpustakaan sistem, Scanner sc);
 }

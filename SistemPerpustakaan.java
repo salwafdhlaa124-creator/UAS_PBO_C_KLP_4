@@ -99,3 +99,14 @@ abstract class Pengguna {
     // Loop utama sesi pengguna setelah login
     public abstract void jalankan(Perpustakaan sistem, Scanner sc);
 }
+
+// ======================= ADMIN =======================
+class Admin extends Pengguna {
+
+    public Admin(String username, String password, String nama) {
+        super(username, password, nama);
+    }
+
+    @Override
+    public String getPeran() { return "Admin"; }
+}

@@ -20,7 +20,6 @@ class Anggota extends Pengguna {
         System.out.println("================================");
     }
 
-
     @Override
     public void jalankan(Perpustakaan sistem, Scanner sc) {
         int pilih;
@@ -51,7 +50,6 @@ class Anggota extends Pengguna {
         } while (pilih != 0);
     }
 
-
     private void pinjam(Perpustakaan sistem, Scanner sc) throws PerpustakaanException {
         // Aturan: tidak boleh meminjam lagi bila pinjaman sebelumnya belum dikembalikan
         Transaksi aktif = sistem.getPinjamanAktif(getUsername());
@@ -67,7 +65,6 @@ class Anggota extends Pengguna {
                 + Transaksi.DENDA_PER_HARI + "/hari jika terlambat)");
     }
 
-
     private void kembalikan(Perpustakaan sistem) throws PerpustakaanException {
         Transaksi t = sistem.kembalikanBuku(getUsername());
         System.out.println("[OK] Buku \"" + t.getJudulBuku() + "\" berhasil dikembalikan.");
@@ -78,7 +75,6 @@ class Anggota extends Pengguna {
         }
     }
 }
-
 
 // ======================= UTILITAS INPUT (EXCEPTION HANDLING) =======================
 class Input {

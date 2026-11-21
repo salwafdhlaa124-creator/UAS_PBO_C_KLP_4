@@ -32,7 +32,7 @@ class Perpustakaan {
         akun.put(username, new Anggota(username, password, nama));
     }
 
-  // ---------- Buku ----------
+    // ---------- Buku ----------
     public ArrayList<Buku> getDaftarBuku() { return daftarBuku; }
 
     public void tambahBuku(Buku b) { daftarBuku.add(b); }
@@ -149,7 +149,3 @@ class Perpustakaan {
         System.out.println(garis);
     }
 }
-
-
-  
-

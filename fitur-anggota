@@ -1,4 +1,3 @@
-
 // ======================= ANGGOTA =======================
 class Anggota extends Pengguna {
 

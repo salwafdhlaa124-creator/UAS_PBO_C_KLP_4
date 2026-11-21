@@ -1,0 +1,151 @@
+// ======================= PENGELOLA DATA (COLLECTION) =======================
+class Perpustakaan {
+    // HashMap untuk data login, ArrayList untuk buku & transaksi
+    private final Map<String, Pengguna> akun = new HashMap<>();
+    private final ArrayList<Buku> daftarBuku = new ArrayList<>();
+    private final ArrayList<Transaksi> daftarTransaksi = new ArrayList<>();
+
+    public Perpustakaan() {
+        akun.put("admin", new Admin("admin", "admin123", "Administrator"));
+        akun.put("budi", new Anggota("budi", "123", "Budi Santoso"));
+
+        daftarBuku.add(new Buku("Pemrograman Java Dasar", "Rudi Hartono", 2020, 5));
+        daftarBuku.add(new Buku("Struktur Data dan Algoritma", "Dewi Lestari", 2019, 3));
+        daftarBuku.add(new Buku("Basis Data Lanjut", "Ahmad Fauzi", 2021, 4));
+        daftarBuku.add(new Buku("Laskar Pelangi", "Andrea Hirata", 2005, 2));
+        daftarBuku.add(new Buku("Bumi Manusia", "Pramoedya Ananta Toer", 1980, 2));
+    }
+
+    // ---------- Autentikasi ----------
+    public Pengguna login(String username, String password) throws PerpustakaanException {
+        Pengguna p = akun.get(username);
+        if (p == null || !p.cekPassword(password)) {
+            throw new PerpustakaanException("Username atau password salah.");
+        }
+        return p;
+    }
+
+    public void daftarAnggota(String username, String password, String nama) throws PerpustakaanException {
+        if (akun.containsKey(username)) {
+            throw new PerpustakaanException("Username \"" + username + "\" sudah digunakan.");
+        }
+        akun.put(username, new Anggota(username, password, nama));
+    }
+
+    // ---------- Buku ----------
+    public ArrayList<Buku> getDaftarBuku() { return daftarBuku; }
+
+    public void tambahBuku(Buku b) { daftarBuku.add(b); }
+
+    public void hapusBuku(Buku b) { daftarBuku.remove(b); }
+
+    public Buku cariBukuById(int id) throws PerpustakaanException {
+        for (Buku b : daftarBuku) {
+            if (b.getId() == id) return b;
+        }
+        throw new PerpustakaanException("Buku dengan ID " + id + " tidak ditemukan.");
+    }
+
+    public ArrayList<Buku> cariBuku(String kata) {
+        ArrayList<Buku> hasil = new ArrayList<>();
+        String k = kata.toLowerCase();
+        for (Buku b : daftarBuku) {
+            if (b.getJudul().toLowerCase().contains(k) || b.getPenulis().toLowerCase().contains(k)) {
+                hasil.add(b);
+            }
+        }
+        return hasil;
+    }
+
+    public boolean bukuSedangDipinjam(int idBuku) {
+        for (Transaksi t : daftarTransaksi) {
+            if (t.getIdBuku() == idBuku && !t.sudahKembali()) return true;
+        }
+        return false;
+    }
+
+    // ---------- Transaksi ----------
+    public ArrayList<Transaksi> getDaftarTransaksi() { return daftarTransaksi; }
+
+    public Transaksi getPinjamanAktif(String username) {
+        for (Transaksi t : daftarTransaksi) {
+            if (t.getUsernameAnggota().equals(username) && !t.sudahKembali()) return t;
+        }
+        return null;
+    }
+
+    public ArrayList<Transaksi> getRiwayatAnggota(String username) {
+        ArrayList<Transaksi> hasil = new ArrayList<>();
+        for (Transaksi t : daftarTransaksi) {
+            if (t.getUsernameAnggota().equals(username)) hasil.add(t);
+        }
+        return hasil;
+    }
+
+    public Transaksi pinjamBuku(String username, int idBuku) throws PerpustakaanException {
+        if (getPinjamanAktif(username) != null) {
+            throw new PerpustakaanException("Anda masih memiliki pinjaman yang belum dikembalikan.");
+        }
+        Buku b = cariBukuById(idBuku);
+        b.kurangiStok();
+        Transaksi t = new Transaksi(username, b, LocalDate.now());
+        daftarTransaksi.add(t);
+        return t;
+    }
+
+    public Transaksi kembalikanBuku(String username) throws PerpustakaanException {
+        Transaksi t = getPinjamanAktif(username);
+        if (t == null) {
+            throw new PerpustakaanException("Anda tidak sedang meminjam buku apa pun.");
+        }
+        t.kembalikan(LocalDate.now());
+        for (Buku b : daftarBuku) {
+            if (b.getId() == t.getIdBuku()) {
+                b.tambahStok();
+                break;
+            }
+        }
+        return t;
+    }
+
+    // ---------- Tampilan ----------
+    public void tampilkanBuku(ArrayList<Buku> list) {
+        if (list.isEmpty()) {
+            System.out.println("\n[INFO] Tidak ada buku yang ditemukan.");
+            return;
+        }
+        String garis = "+-----+--------------------------------+----------------------+-------+------+";
+        System.out.println("\n" + garis);
+        System.out.println("| ID  | Judul                          | Penulis              | Tahun | Stok |");
+        System.out.println(garis);
+        for (Buku b : list) System.out.println(b);
+        System.out.println(garis);
+    }
+
+    public void tampilkanAnggota() {
+        System.out.println("\n=== DAFTAR ANGGOTA ===");
+        int no = 0;
+        for (Pengguna p : akun.values()) {
+            if (p instanceof Anggota) {
+                no++;
+                Transaksi aktif = getPinjamanAktif(p.getUsername());
+                System.out.printf("%d. %-10s | %-20s | %s%n", no, p.getUsername(), p.getNama(),
+                        aktif == null ? "Tidak meminjam" : "Meminjam: " + aktif.getJudulBuku());
+            }
+        }
+        if (no == 0) System.out.println("Belum ada anggota terdaftar.");
+    }
+
+    public void tampilkanTransaksi(ArrayList<Transaksi> list) {
+        if (list.isEmpty()) {
+            System.out.println("\n[INFO] Belum ada riwayat transaksi.");
+            return;
+        }
+        String garis = "+-----+------------+---------------------------+------------+------------+--------------------------+----------+";
+        System.out.println("\n" + garis);
+        System.out.println("| ID  | Anggota    | Judul Buku                | Pinjam     | Jatuh Tempo| Status                   | Denda    |");
+        System.out.println(garis);
+        for (Transaksi t : list) System.out.println(t);
+        System.out.println(garis);
+    }
+}

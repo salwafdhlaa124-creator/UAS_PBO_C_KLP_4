@@ -51,3 +51,19 @@ class Anggota extends Pengguna {
             }
         } while (pilih != 0);
     }
+
+
+    private void pinjam(Perpustakaan sistem, Scanner sc) throws PerpustakaanException {
+        // Aturan: tidak boleh meminjam lagi bila pinjaman sebelumnya belum dikembalikan
+        Transaksi aktif = sistem.getPinjamanAktif(getUsername());
+        if (aktif != null) {
+            throw new PerpustakaanException("Anda belum mengembalikan \"" + aktif.getJudulBuku()
+                    + "\". Kembalikan terlebih dahulu sebelum meminjam lagi.");
+        }
+        sistem.tampilkanBuku(sistem.getDaftarBuku());
+        int id = Input.bacaInt(sc, "ID buku yang dipinjam: ");
+        Transaksi t = sistem.pinjamBuku(getUsername(), id);
+        System.out.println("[OK] Berhasil meminjam \"" + t.getJudulBuku() + "\".");
+        System.out.println("     Jatuh tempo: " + t.getJatuhTempo() + " (denda Rp"
+                + Transaksi.DENDA_PER_HARI + "/hari jika terlambat)");
+    }

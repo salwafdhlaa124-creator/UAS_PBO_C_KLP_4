@@ -108,47 +108,4 @@ class Perpustakaan {
         return t;
     }
 
-    // ---------- Tampilan ----------
-    public void tampilkanBuku(ArrayList<Buku> list) {
-        if (list.isEmpty()) {
-            System.out.println("\n[INFO] Tidak ada buku yang ditemukan.");
-            return;
-        }
-        String garis = "+-----+--------------------------------+----------------------+-------+------+";
-        System.out.println("\n" + garis);
-        System.out.println("| ID  | Judul                          | Penulis              | Tahun | Stok |");
-        System.out.println(garis);
-        for (Buku b : list) System.out.println(b);
-        System.out.println(garis);
-    }
-
-    public void tampilkanAnggota() {
-        System.out.println("\n=== DAFTAR ANGGOTA ===");
-        int no = 0;
-        for (Pengguna p : akun.values()) {
-            if (p instanceof Anggota) {
-                no++;
-                Transaksi aktif = getPinjamanAktif(p.getUsername());
-                System.out.printf("%d. %-10s | %-20s | %s%n", no, p.getUsername(), p.getNama(),
-                        aktif == null ? "Tidak meminjam" : "Meminjam: " + aktif.getJudulBuku());
-            }
-        }
-        if (no == 0) System.out.println("Belum ada anggota terdaftar.");
-    }
-
-    public void tampilkanTransaksi(ArrayList<Transaksi> list) {
-        if (list.isEmpty()) {
-            System.out.println("\n[INFO] Belum ada riwayat transaksi.");
-            return;
-        }
-        String garis = "+-----+------------+---------------------------+------------+------------+--------------------------+----------+";
-        System.out.println("\n" + garis);
-        System.out.println("| ID  | Anggota    | Judul Buku                | Pinjam     | Jatuh Tempo| Status                   | Denda    |");
-        System.out.println(garis);
-        for (Transaksi t : list) System.out.println(t);
-        System.out.println(garis);
-    }
-}
-
-
-  
+    

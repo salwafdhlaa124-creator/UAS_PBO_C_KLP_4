@@ -1,0 +1,10 @@
+
+// ======================= ANGGOTA =======================
+class Anggota extends Pengguna {
+
+    public Anggota(String username, String password, String nama) {
+        super(username, password, nama);
+    }
+
+    @Override
+    public String getPeran() { return "Anggota"; }

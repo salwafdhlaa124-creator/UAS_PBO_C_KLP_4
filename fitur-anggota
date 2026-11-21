@@ -20,3 +20,34 @@ class Anggota extends Pengguna {
         System.out.println("0. Logout");
         System.out.println("================================");
     }
+
+
+    @Override
+    public void jalankan(Perpustakaan sistem, Scanner sc) {
+        int pilih;
+        do {
+            tampilkanMenu();
+            Transaksi aktif = sistem.getPinjamanAktif(getUsername());
+            if (aktif != null) {
+                System.out.println("[INFO] Anda sedang meminjam \"" + aktif.getJudulBuku()
+                        + "\" (jatuh tempo " + aktif.getJatuhTempo() + ")");
+            }
+            pilih = Input.bacaInt(sc, "Pilih menu: ");
+            try {
+                switch (pilih) {
+                    case 1: sistem.tampilkanBuku(sistem.getDaftarBuku()); break;
+                    case 2:
+                        String kata = Input.bacaTeks(sc, "Kata kunci judul/penulis: ");
+                        sistem.tampilkanBuku(sistem.cariBuku(kata));
+                        break;
+                    case 3: pinjam(sistem, sc); break;
+                    case 4: kembalikan(sistem); break;
+                    case 5: sistem.tampilkanTransaksi(sistem.getRiwayatAnggota(getUsername())); break;
+                    case 0: System.out.println("Logout berhasil."); break;
+                    default: System.out.println("Menu tidak tersedia.");
+                }
+            } catch (PerpustakaanException e) {
+                System.out.println("[GAGAL] " + e.getMessage());
+            }
+        } while (pilih != 0);
+    }

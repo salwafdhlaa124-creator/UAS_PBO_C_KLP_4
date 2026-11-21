@@ -79,3 +79,36 @@ class Anggota extends Pengguna {
         }
     }
 }
+
+
+// ======================= UTILITAS INPUT (EXCEPTION HANDLING) =======================
+class Input {
+    // try-catch InputMismatchException agar program tidak crash
+    public static int bacaInt(Scanner sc, String prompt) {
+        while (true) {
+            try {
+                System.out.print(prompt);
+                int nilai = sc.nextInt();
+                sc.nextLine();
+                return nilai;
+            } catch (InputMismatchException e) {
+                System.out.println("[ERROR] Input harus berupa angka bulat. Coba lagi.");
+                sc.nextLine();
+            }
+        }
+    }
+
+    public static String bacaTeks(Scanner sc, String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String s = sc.nextLine().trim();
+            if (!s.isEmpty()) return s;
+            System.out.println("[ERROR] Input tidak boleh kosong.");
+        }
+    }
+
+    public static String bacaTeksOpsional(Scanner sc, String prompt) {
+        System.out.print(prompt);
+        return sc.nextLine().trim();
+    }
+}

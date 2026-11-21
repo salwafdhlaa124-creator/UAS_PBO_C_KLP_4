@@ -8,3 +8,15 @@ class Anggota extends Pengguna {
 
     @Override
     public String getPeran() { return "Anggota"; }
+
+    @Override
+    public void tampilkanMenu() {
+        System.out.println("\n========= MENU ANGGOTA =========");
+        System.out.println("1. Lihat Daftar Buku");
+        System.out.println("2. Cari Buku");
+        System.out.println("3. Pinjam Buku");
+        System.out.println("4. Kembalikan Buku");
+        System.out.println("5. Riwayat Peminjaman Saya");
+        System.out.println("0. Logout");
+        System.out.println("================================");
+    }

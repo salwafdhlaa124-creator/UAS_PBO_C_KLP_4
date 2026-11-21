@@ -67,3 +67,15 @@ class Anggota extends Pengguna {
         System.out.println("     Jatuh tempo: " + t.getJatuhTempo() + " (denda Rp"
                 + Transaksi.DENDA_PER_HARI + "/hari jika terlambat)");
     }
+
+
+    private void kembalikan(Perpustakaan sistem) throws PerpustakaanException {
+        Transaksi t = sistem.kembalikanBuku(getUsername());
+        System.out.println("[OK] Buku \"" + t.getJudulBuku() + "\" berhasil dikembalikan.");
+        if (t.getDenda() > 0) {
+            System.out.println("     Anda terlambat. Denda: Rp" + t.getDenda());
+        } else {
+            System.out.println("     Tepat waktu, tidak ada denda.");
+        }
+    }
+}

@@ -43,3 +43,15 @@ public class SistemPerpustakaan {
                 case 1:
                     String user = Input.bacaTeks(sc, "Username: ");
                     String pass = Input.bacaTeks(sc, "Password: ");
+                    try {
+                        Pengguna p = sistem.login(user, pass);
+                        System.out.println("\nSelamat datang, " + p.getNama() + " (" + p.getPeran() + ")!");
+                        p.jalankan(sistem, sc); // polymorphism: Admin / Anggota
+                    } catch (PerpustakaanException e) {
+                        System.out.println("[GAGAL] " + e.getMessage());
+                    }
+                    break;
+                case 2:
+                    String nama = Input.bacaTeks(sc, "Nama lengkap: ");
+                    String u = Input.bacaTeks(sc, "Username    : ");
+                    String pw = Input.bacaTeks(sc, "Password    : ");

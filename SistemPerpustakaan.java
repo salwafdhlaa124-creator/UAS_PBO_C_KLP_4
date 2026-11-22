@@ -69,8 +69,3 @@ class Buku {
         return String.format("| %-3d | %-30s | %-20s | %-5d | %-4d |",
                 id, potong(judul, 30), potong(penulis, 20), tahun, stok);
     }
-
-    private static String potong(String s, int max) {
-        return s.length() <= max ? s : s.substring(0, max - 3) + "...";
-    }
-}

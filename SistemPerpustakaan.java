@@ -31,3 +31,15 @@ public class SistemPerpustakaan {
         int pilih;
 
         do {
+            System.out.println("\n===================================");
+            System.out.println("   SISTEM MANAJEMEN PERPUSTAKAAN   ");
+            System.out.println("===================================");
+            System.out.println("1. Login");
+            System.out.println("2. Daftar Anggota Baru");
+            System.out.println("0. Keluar");
+            pilih = Input.bacaInt(sc, "Pilih menu: ");
+
+            switch (pilih) {
+                case 1:
+                    String user = Input.bacaTeks(sc, "Username: ");
+                    String pass = Input.bacaTeks(sc, "Password: ");

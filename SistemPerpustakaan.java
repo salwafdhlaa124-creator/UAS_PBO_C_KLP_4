@@ -22,3 +22,12 @@ import java.util.Scanner;
         System.out.println(garis);
     }
 }
+
+// ======================= MAIN =======================
+public class SistemPerpustakaan {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        Perpustakaan sistem = new Perpustakaan();
+        int pilih;
+
+        do {

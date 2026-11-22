@@ -64,3 +64,12 @@ public class SistemPerpustakaan {
                     break;
                 case 0:
                     System.out.println("Terima kasih telah menggunakan sistem perpustakaan.");
+                    break;
+                default:
+                    System.out.println("Menu tidak tersedia.");
+            }
+        } while (pilih != 0);
+
+        sc.close();
+    }
+}

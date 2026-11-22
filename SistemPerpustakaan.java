@@ -55,3 +55,12 @@ public class SistemPerpustakaan {
                     String nama = Input.bacaTeks(sc, "Nama lengkap: ");
                     String u = Input.bacaTeks(sc, "Username    : ");
                     String pw = Input.bacaTeks(sc, "Password    : ");
+                    try {
+                        sistem.daftarAnggota(u, pw, nama);
+                        System.out.println("[OK] Pendaftaran berhasil. Silakan login.");
+                    } catch (PerpustakaanException e) {
+                        System.out.println("[GAGAL] " + e.getMessage());
+                    }
+                    break;
+                case 0:
+                    System.out.println("Terima kasih telah menggunakan sistem perpustakaan.");

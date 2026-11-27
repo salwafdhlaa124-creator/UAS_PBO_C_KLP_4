@@ -74,3 +74,143 @@ class Buku {
         return s.length() <= max ? s : s.substring(0, max - 3) + "...";
     }
 }
+
+// ======================= ABSTRACTION: PENGGUNA =======================
+abstract class Pengguna {
+    private final String username;
+    private String password;
+    private final String nama;
+
+    public Pengguna(String username, String password, String nama) {
+        this.username = username;
+        this.password = password;
+        this.nama = nama;
+    }
+    public String getUsername() { return username; }
+    public String getNama() { return nama; }
+
+    public boolean cekPassword(String input) { return password.equals(input); 
+    }
+        public abstract String getPeran();
+
+    // Polymorphism: tiap subclass menampilkan menu sesuai hak akses
+    public abstract void tampilkanMenu();
+
+    // Loop utama sesi pengguna setelah login
+    public abstract void jalankan(Perpustakaan sistem, Scanner sc);
+}
+
+// ======================= ADMIN =======================
+class Admin extends Pengguna {
+
+    public Admin(String username, String password, String nama) {
+        super(username, password, nama);
+    }
+
+    @Override
+    public String getPeran() { return "Admin"; }
+
+    @Override
+    public void tampilkanMenu() {
+        System.out.println("\n========== MENU ADMIN ==========");
+        System.out.println("1. Lihat Daftar Buku");
+        System.out.println("2. Cari Buku");
+        System.out.println("3. Tambah Buku");
+        System.out.println("4. Edit Buku");
+        System.out.println("5. Hapus Buku");
+        System.out.println("6. Lihat Daftar Anggota");
+        System.out.println("7. Lihat Semua Riwayat Transaksi");
+        System.out.println("0. Logout");
+        System.out.println("================================");
+    }
+    @Override
+    public void jalankan(Perpustakaan sistem, Scanner sc) {
+        int pilih;
+        do {
+            tampilkanMenu();
+            pilih = Input.bacaInt(sc, "Pilih menu: ");
+            try {
+                switch (pilih) {
+                    case 1: sistem.tampilkanBuku(sistem.getDaftarBuku()); break;
+                    case 2: cariBuku(sistem, sc); break;
+                    case 3: tambahBuku(sistem, sc); break;
+                    case 4: editBuku(sistem, sc); break;
+                    case 5: hapusBuku(sistem, sc); break;
+                    case 6: sistem.tampilkanAnggota(); break;
+                    case 7: sistem.tampilkanTransaksi(sistem.getDaftarTransaksi()); break;
+                    case 0: System.out.println("Logout berhasil."); break;
+                    default: System.out.println("Menu tidak tersedia.");
+                }
+            } catch (PerpustakaanException e) {
+                System.out.println("[GAGAL] " + e.getMessage());
+            }
+        } while (pilih != 0);
+    } 
+    
+    private void cariBuku(Perpustakaan sistem, Scanner sc) {
+        String kata = Input.bacaTeks(sc, "Kata kunci judul/penulis: ");
+        sistem.tampilkanBuku(sistem.cariBuku(kata));
+    }
+
+    private void tambahBuku(Perpustakaan sistem, Scanner sc) throws PerpustakaanException {
+        String judul = Input.bacaTeks(sc, "Judul    : ");
+        String penulis = Input.bacaTeks(sc, "Penulis  : ");
+        int tahun = Input.bacaInt(sc, "Tahun    : ");
+        int stok = Input.bacaInt(sc, "Stok     : ");
+        if (tahun < 1000 || tahun > LocalDate.now().getYear()) {
+            throw new PerpustakaanException("Tahun terbit tidak valid.");
+        }
+        if (stok < 0) {
+            throw new PerpustakaanException("Stok tidak boleh negatif.");
+        }
+        Buku b = new Buku(judul, penulis, tahun, stok);
+        sistem.tambahBuku(b);
+        System.out.println("[OK] Buku berhasil ditambahkan dengan ID " + b.getId());
+    }
+
+    private void editBuku(Perpustakaan sistem, Scanner sc) throws PerpustakaanException {
+        sistem.tampilkanBuku(sistem.getDaftarBuku());
+        int id = Input.bacaInt(sc, "ID buku yang diedit: ");
+        Buku b = sistem.cariBukuById(id);
+        System.out.println("(Kosongkan input untuk mempertahankan nilai lama)");
+
+        String judul = Input.bacaTeksOpsional(sc, "Judul [" + b.getJudul() + "]: ");
+        String penulis = Input.bacaTeksOpsional(sc, "Penulis [" + b.getPenulis() + "]: ");
+        String tahun = Input.bacaTeksOpsional(sc, "Tahun [" + b.getTahun() + "]: ");
+        String stok = Input.bacaTeksOpsional(sc, "Stok [" + b.getStok() + "]: ");
+
+        try {
+            int tahunBaru = tahun.isEmpty() ? b.getTahun() : Integer.parseInt(tahun);
+            int stokBaru = stok.isEmpty() ? b.getStok() : Integer.parseInt(stok);
+            if (tahunBaru < 1000 || tahunBaru > LocalDate.now().getYear()) {
+                throw new PerpustakaanException("Tahun terbit tidak valid.");
+            }
+            if (stokBaru < 0) {
+                throw new PerpustakaanException("Stok tidak boleh negatif.");
+            }
+            if (!judul.isEmpty()) b.setJudul(judul);
+            if (!penulis.isEmpty()) b.setPenulis(penulis);
+            b.setTahun(tahunBaru);
+            b.setStok(stokBaru);
+            System.out.println("[OK] Data buku berhasil diperbarui.");
+        } catch (NumberFormatException e) {
+            throw new PerpustakaanException("Tahun dan stok harus berupa angka.");
+        }
+    }
+
+    private void hapusBuku(Perpustakaan sistem, Scanner sc) throws PerpustakaanException {
+        sistem.tampilkanBuku(sistem.getDaftarBuku());
+        int id = Input.bacaInt(sc, "ID buku yang dihapus: ");
+        Buku b = sistem.cariBukuById(id);
+        if (sistem.bukuSedangDipinjam(id)) {
+            throw new PerpustakaanException("Buku masih dipinjam anggota, tidak bisa dihapus.");
+        }
+        String yakin = Input.bacaTeks(sc, "Yakin hapus \"" + b.getJudul() + "\"? (y/n): ");
+        if (yakin.equalsIgnoreCase("y")) {
+            sistem.hapusBuku(b);
+            System.out.println("[OK] Buku berhasil dihapus.");
+        } else {
+            System.out.println("Penghapusan dibatalkan.");
+        }
+    }
+}

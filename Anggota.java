@@ -1,0 +1,112 @@
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+// ======================= ANGGOTA =======================
+class Anggota extends Pengguna {
+
+    public Anggota(String username, String password, String nama) {
+        super(username, password, nama);
+    }
+
+    @Override
+    public String getPeran() { return "Anggota"; }
+
+    @Override
+    public void tampilkanMenu() {
+        System.out.println("\n========= MENU ANGGOTA =========");
+        System.out.println("1. Lihat Daftar Buku");
+        System.out.println("2. Cari Buku");
+        System.out.println("3. Pinjam Buku");
+        System.out.println("4. Kembalikan Buku");
+        System.out.println("5. Riwayat Peminjaman Saya");
+        System.out.println("0. Logout");
+        System.out.println("================================");
+    }
+
+    @Override
+    public void jalankan(Perpustakaan sistem, Scanner sc) {
+        int pilih;
+        do {
+            tampilkanMenu();
+            Transaksi aktif = sistem.getPinjamanAktif(getUsername());
+            if (aktif != null) {
+                System.out.println("[INFO] Anda sedang meminjam \"" + aktif.getJudulBuku()
+                        + "\" (jatuh tempo " + aktif.getJatuhTempo() + ")");
+            }
+            pilih = Input.bacaInt(sc, "Pilih menu: ");
+            try {
+                switch (pilih) {
+                    case 1: sistem.tampilkanBuku(sistem.getDaftarBuku()); break;
+                    case 2:
+                        String kata = Input.bacaTeks(sc, "Kata kunci judul/penulis: ");
+                        sistem.tampilkanBuku(sistem.cariBuku(kata));
+                        break;
+                    case 3: pinjam(sistem, sc); break;
+                    case 4: kembalikan(sistem); break;
+                    case 5: sistem.tampilkanTransaksi(sistem.getRiwayatAnggota(getUsername())); break;
+                    case 0: System.out.println("Logout berhasil."); break;
+                    default: System.out.println("Menu tidak tersedia.");
+                }
+            } catch (PerpustakaanException e) {
+                System.out.println("[GAGAL] " + e.getMessage());
+            }
+        } while (pilih != 0);
+    }
+
+    private void pinjam(Perpustakaan sistem, Scanner sc) throws PerpustakaanException {
+        // Aturan: tidak boleh meminjam lagi bila pinjaman sebelumnya belum dikembalikan
+        Transaksi aktif = sistem.getPinjamanAktif(getUsername());
+        if (aktif != null) {
+            throw new PerpustakaanException("Anda belum mengembalikan \"" + aktif.getJudulBuku()
+                    + "\". Kembalikan terlebih dahulu sebelum meminjam lagi.");
+        }
+        sistem.tampilkanBuku(sistem.getDaftarBuku());
+        int id = Input.bacaInt(sc, "ID buku yang dipinjam: ");
+        Transaksi t = sistem.pinjamBuku(getUsername(), id);
+        System.out.println("[OK] Berhasil meminjam \"" + t.getJudulBuku() + "\".");
+        System.out.println("     Jatuh tempo: " + t.getJatuhTempo() + " (denda Rp"
+                + Transaksi.DENDA_PER_HARI + "/hari jika terlambat)");
+    }
+
+    private void kembalikan(Perpustakaan sistem) throws PerpustakaanException {
+        Transaksi t = sistem.kembalikanBuku(getUsername());
+        System.out.println("[OK] Buku \"" + t.getJudulBuku() + "\" berhasil dikembalikan.");
+        if (t.getDenda() > 0) {
+            System.out.println("     Anda terlambat. Denda: Rp" + t.getDenda());
+        } else {
+            System.out.println("     Tepat waktu, tidak ada denda.");
+        }
+    }
+}
+
+// ======================= UTILITAS INPUT (EXCEPTION HANDLING) =======================
+class Input {
+    // try-catch InputMismatchException agar program tidak crash
+    public static int bacaInt(Scanner sc, String prompt) {
+        while (true) {
+            try {
+                System.out.print(prompt);
+                int nilai = sc.nextInt();
+                sc.nextLine();
+                return nilai;
+            } catch (InputMismatchException e) {
+                System.out.println("[ERROR] Input harus berupa angka bulat. Coba lagi.");
+                sc.nextLine();
+            }
+        }
+    }
+
+    public static String bacaTeks(Scanner sc, String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String s = sc.nextLine().trim();
+            if (!s.isEmpty()) return s;
+            System.out.println("[ERROR] Input tidak boleh kosong.");
+        }
+    }
+
+    public static String bacaTeksOpsional(Scanner sc, String prompt) {
+        System.out.print(prompt);
+        return sc.nextLine().trim();
+    }
+}

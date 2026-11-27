@@ -1,3 +1,8 @@
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 // ======================= PENGELOLA DATA (COLLECTION) =======================
 class Perpustakaan {
     // HashMap untuk data login, ArrayList untuk buku & transaksi

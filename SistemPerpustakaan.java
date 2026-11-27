@@ -266,3 +266,54 @@ class Transaksi {
                 tanggalPinjam, jatuhTempo, status, denda);
     }
 }
+
+// ======================= MAIN =======================
+public class SistemPerpustakaan {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        Perpustakaan sistem = new Perpustakaan();
+        int pilih;
+
+        do {
+            System.out.println("\n===================================");
+            System.out.println("   SISTEM MANAJEMEN PERPUSTAKAAN   ");
+            System.out.println("===================================");
+            System.out.println("1. Login");
+            System.out.println("2. Daftar Anggota Baru");
+            System.out.println("0. Keluar");
+            pilih = Input.bacaInt(sc, "Pilih menu: ");
+
+            switch (pilih) {
+                case 1:
+                    String user = Input.bacaTeks(sc, "Username: ");
+                    String pass = Input.bacaTeks(sc, "Password: ");
+                    try {
+                        Pengguna p = sistem.login(user, pass);
+                        System.out.println("\nSelamat datang, " + p.getNama() + " (" + p.getPeran() + ")!");
+                        p.jalankan(sistem, sc); // polymorphism: Admin / Anggota
+                    } catch (PerpustakaanException e) {
+                        System.out.println("[GAGAL] " + e.getMessage());
+                    }
+                    break;
+                case 2:
+                    String nama = Input.bacaTeks(sc, "Nama lengkap: ");
+                    String u = Input.bacaTeks(sc, "Username    : ");
+                    String pw = Input.bacaTeks(sc, "Password    : ");
+                    try {
+                        sistem.daftarAnggota(u, pw, nama);
+                        System.out.println("[OK] Pendaftaran berhasil. Silakan login.");
+                    } catch (PerpustakaanException e) {
+                        System.out.println("[GAGAL] " + e.getMessage());
+                    }
+                    break;
+                case 0:
+                    System.out.println("Terima kasih telah menggunakan sistem perpustakaan.");
+                    break;
+                default:
+                    System.out.println("Menu tidak tersedia.");
+            }
+        } while (pilih != 0);
+
+        sc.close();
+    }
+}

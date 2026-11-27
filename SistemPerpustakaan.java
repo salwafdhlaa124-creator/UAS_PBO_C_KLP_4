@@ -1,9 +1,5 @@
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.InputMismatchException;
-import java.util.Map;
 import java.util.Scanner;
 
 /**
